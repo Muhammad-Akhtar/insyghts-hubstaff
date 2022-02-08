@@ -16,7 +16,7 @@ class AttendanceController extends Controller
         $this->attendanceLogService = $attendanceLogService;
     }
 
-    public function index(Request $request)
+    public function attendances(Request $request)
     {
         $filters = $request->all();
         $result = $this->attendanceService->getAttendanceList($filters);
@@ -29,7 +29,7 @@ class AttendanceController extends Controller
     }
 
     // Attendance Log will be received here
-    public function store(Request $request)
+    public function storeAttendanceLog(Request $request)
     {
         $input = $request->all();
         $result = $this->attendanceLogService->saveAttendanceLog($input);
@@ -42,7 +42,7 @@ class AttendanceController extends Controller
         }
     }
 
-    public function show($id)
+    public function showAttendance($id)
     {
         $result = $this->attendanceService->getAttendanceById($id);
         if($result['success']){

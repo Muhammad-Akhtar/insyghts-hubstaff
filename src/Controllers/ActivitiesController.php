@@ -16,7 +16,7 @@ class ActivitiesController extends Controller
         $this->actScreenShotService = $aScreenShot;
     }
 
-    public function store(Request $request)
+    public function storeActivityLog(Request $request)
     {
         // Data with a zip file.
         $input = $request->all();
