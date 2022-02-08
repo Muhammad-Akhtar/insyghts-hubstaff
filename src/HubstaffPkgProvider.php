@@ -13,8 +13,7 @@ class HubstaffPkgProvider extends ServiceProvider
      * @return void
      */
     public function register()
-    {
-        $this->app->register(EventServiceProvider::class);        
+    {        
     }
 
     /**
