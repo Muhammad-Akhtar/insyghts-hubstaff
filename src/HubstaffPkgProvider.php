@@ -3,7 +3,6 @@
 namespace Insyghts\Hubstaff;
 
 use Illuminate\Support\ServiceProvider;
-use Insyghts\Hubstaff\Providers\EventServiceProvider;
 
 class HubstaffPkgProvider extends ServiceProvider
 {
@@ -13,7 +12,10 @@ class HubstaffPkgProvider extends ServiceProvider
      * @return void
      */
     public function register()
-    {        
+    {   
+        // Registering all controllers 
+        $this->app->make('Insyghts\Hubstaff\Controllers\AttendanceController');
+        $this->app->make('Insyghts\Hubstaff\Controllers\ActivitiesController');
     }
 
     /**

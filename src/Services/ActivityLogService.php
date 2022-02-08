@@ -3,7 +3,6 @@
 namespace Insyghts\Hubstaff\Services;
 
 use Exception;
-use Insyghts\Hubstaff\Events\AttendanceLogSavingEvent;
 use Insyghts\Hubstaff\Models\ActivityLog;
 use Insyghts\Hubstaff\Models\ActivityScreenShot;
 use Insyghts\Hubstaff\Models\AttendanceLog;

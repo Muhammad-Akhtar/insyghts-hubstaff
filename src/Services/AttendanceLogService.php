@@ -3,8 +3,6 @@
 namespace Insyghts\Hubstaff\Services;
 
 use Exception;
-use Illuminate\Support\Facades\DB;
-use Insyghts\Hubstaff\Events\AttendanceLogCreated;
 use Insyghts\Hubstaff\Models\ActivityLog;
 use Insyghts\Hubstaff\Models\Attendance;
 use Insyghts\Hubstaff\Models\AttendanceLog;
