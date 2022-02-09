@@ -22,7 +22,7 @@ class AttendanceController extends Controller
         $result = $this->attendanceService->getAttendanceList($filters);
  
         if($result['success']){
-            return response()->json(['success' => false, 'attendances' => $result['data']]);        
+            return response()->json(['success' => true, 'attendances' => $result['data']]);        
         }else{
             return response()->json(['success' =>false, 'message' => $result['data']]);
         }

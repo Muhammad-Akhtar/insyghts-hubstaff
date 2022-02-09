@@ -9,12 +9,12 @@ class ComposerStaticInitb3058a1f1f1ae2ebff7a9c0d814b6b5c
     public static $prefixLengthsPsr4 = array (
         'G' => 
         array (
-            'Graymatrixpkg\\Hubstaffpkg\\' => 26,
+            'Insyghts\\Hubstaff\\' => 26,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'Graymatrixpkg\\Hubstaffpkg\\' => 
+        'Insyghts\\Hubstaff\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src',
         ),

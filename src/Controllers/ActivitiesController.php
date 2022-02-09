@@ -22,7 +22,9 @@ class ActivitiesController extends Controller
         $input = $request->all();
         $result = $this->actLogService->saveActivityLog($input);
         if($result['success']){
-            $result = $this->actScreenShotService->saveActivityScreenShot($input, $result['data']);
+            if(isset($input['screen_shots'])){
+                $result = $this->actScreenShotService->saveActivityScreenShot($input, $result['data']);
+            }
             return response()->json(['success' => true, 'message' => $result['data']]);
         }else{
             return response()->json(['success' => false, 'message' => $result['data']]);

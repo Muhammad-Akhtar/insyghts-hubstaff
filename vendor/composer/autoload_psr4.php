@@ -6,5 +6,5 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Graymatrixpkg\\Hubstaffpkg\\' => array($baseDir . '/src'),
+    'Insyghts\\Hubstaff\\' => array($baseDir . '/src'),
 );

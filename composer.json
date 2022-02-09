@@ -16,6 +16,6 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "insyghts/authendication": "dev-main"
+        "insyghts/authentication": "dev-main"
     }
 }
