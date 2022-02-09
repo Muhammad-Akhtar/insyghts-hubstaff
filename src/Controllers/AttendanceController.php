@@ -4,6 +4,7 @@ namespace Insyghts\Hubstaff\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Insyghts\Authentication\Middleware\myAuth;
 use Insyghts\Hubstaff\Services\AttendanceLogService;
 use Insyghts\Hubstaff\Services\AttendanceService;
 
@@ -12,6 +13,7 @@ class AttendanceController extends Controller
     public function __construct(AttendanceService $attendanceService,
                                 AttendanceLogService $attendanceLogService)
     {
+        $this->middleware(myAuth::class);
         $this->attendanceService = $attendanceService;
         $this->attendanceLogService = $attendanceLogService;
     }
