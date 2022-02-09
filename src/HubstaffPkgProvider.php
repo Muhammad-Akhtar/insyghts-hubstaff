@@ -3,8 +3,6 @@
 namespace Insyghts\Hubstaff;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Routing\Router;
-use yourpackageauthor\YourPackageName\App\Http\Middleware\YourMiddlwareClass;
 
 class HubstaffPkgProvider extends ServiceProvider
 {
@@ -25,10 +23,9 @@ class HubstaffPkgProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot(Router $router)
+    public function boot()
     {
         $this->loadMigrationsFrom(__DIR__.'/migrations');
         $this->loadRoutesFrom(__DIR__.'/routes.php');
-        // $router->middlewareGroup('yourMiddlwareName', ['namespace\yourmiddlewareclass']);
     }
 }
