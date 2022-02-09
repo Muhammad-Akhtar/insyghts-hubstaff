@@ -2,7 +2,8 @@
 
 namespace Insyghts\Hubstaff\Helpers;
 
-class Helper {
+
+class Helpers {
 
     public static function get_public_path($folder)
     {
