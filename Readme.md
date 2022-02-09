@@ -4,9 +4,8 @@ For Lumen
 
 => inside bootstrap/app.php
 
-Uncomment  below lines
+Uncomment  below two lines if these are commented out
 $app->withFacades();
-
 $app->withEloquent();
 
 add following lines
