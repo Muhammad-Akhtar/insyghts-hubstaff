@@ -13,7 +13,8 @@ class ActivitiesController extends Controller
     public function __construct(ActivityLogService $aLog, 
                                 ActivityScreenShotService $aScreenShot)
     {
-        $this->middleware(myAuth::class);
+        // Not completed yet by babar
+        // $this->middleware(myAuth::class);
         $this->actLogService = $aLog;
         $this->actScreenShotService = $aScreenShot;
     }

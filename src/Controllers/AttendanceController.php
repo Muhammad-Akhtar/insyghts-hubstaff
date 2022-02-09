@@ -13,7 +13,8 @@ class AttendanceController extends Controller
     public function __construct(AttendanceService $attendanceService,
                                 AttendanceLogService $attendanceLogService)
     {
-        $this->middleware(myAuth::class);
+        // Not completed yet by babar
+        // $this->middleware(myAuth::class);
         $this->attendanceService = $attendanceService;
         $this->attendanceLogService = $attendanceLogService;
     }
