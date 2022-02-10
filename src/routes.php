@@ -1,6 +1,6 @@
 <?php
 
-Routes::group([
+Route::group([
 	'prefix' => 'api'
 ], function(){
 	Route::post('hubstaff/attendances/filter', 'Insyghts\Hubstaff\Controllers\AttendanceController@attendances');
