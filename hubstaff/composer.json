@@ -1,0 +1,21 @@
+{
+    "name": "insyghts/hubstaff",
+    "description": "Graymatrix Product",
+    "type": "project",
+    "license": "proprietary",
+    "autoload": {
+        "psr-4": {
+            "Insyghts\\Hubstaff\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "M Akhtar",
+            "email": "muhammad.akhtar.ext@graymatrix.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "insyghts/authentication": "dev-main"
+    }
+}
