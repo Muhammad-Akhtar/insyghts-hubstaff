@@ -4,6 +4,7 @@ namespace Insyghts\Hubstaff\Services;
 
 use Exception;
 use Insyghts\Authentication\Helpers\Helpers;
+use Insyghts\Authentication\Models\SessionToken;
 use Insyghts\Authentication\Models\User;
 use Insyghts\Hubstaff\Models\ActivityLog;
 use Insyghts\Hubstaff\Models\Attendance;
@@ -32,13 +33,13 @@ class AttendanceLogService
             'data' => 'There is some error while saving'
         ];
 
-        $user = $this->user->user($this->token);
-
+        $user_id = app('loginUser')->getUser();
+        $session_token_id = SessionToken::getId($user_id);
         $data['attendance_date'] = gmdate('Y-m-d', strtotime($data['attendance_date']));
         $data['attendance_status_date'] = gmdate('Y-m-d G:i:s', strtotime($data['attendance_status_date']));
-        $data['user_id'] = $user->id;
-        $data['session_token_id'] = $user->session_token_id;
-        $data['created_by'] = $user->id;
+        $data['user_id'] = $user_id;
+        $data['session_token_id'] = $session_token_id;
+        $data['created_by'] = $user_id;
 
         // $data = [
         //     'user_id' => 1,

@@ -4,6 +4,7 @@ namespace Insyghts\Hubstaff\Services;
 
 use Exception;
 use Insyghts\Authentication\Helpers\Helpers;
+use Insyghts\Authentication\Models\SessionToken;
 use Insyghts\Authentication\Models\User;
 use Insyghts\Hubstaff\Models\ActivityLog;
 use Insyghts\Hubstaff\Models\ActivityScreenShot;
@@ -44,10 +45,11 @@ class ActivityLogService
             $log_to_date = gmdate('Y-m-d G:i:s', strtotime($data['log_to_date']));
             $data['log_to_date'] = $log_to_date;
         }
-        $user = $this->user->user($this->token);
-        $data['user_id'] = $user->id;
-        $data['session_token_id'] = $user->session_token_id;
-        $data['created_by'] = $user->id;
+        $user_id = app('loginUser')->getUser();
+        $session_token_id = SessionToken::getId($user_id);
+        $data['user_id'] = $user_id;
+        $data['session_token_id'] = $session_token_id;
+        $data['created_by'] = $user_id;
         $data = [
             // currently logged-in user will be here
             'user_id' => $data['user_id'],
