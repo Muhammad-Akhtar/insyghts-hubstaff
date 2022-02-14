@@ -45,8 +45,9 @@ class ActivityLogService
             $log_to_date = gmdate('Y-m-d G:i:s', strtotime($data['log_to_date']));
             $data['log_to_date'] = $log_to_date;
         }
-        $user_id = app('loginUser')->getUser();
-        $session_token_id = SessionToken::getId($user_id);
+        $user = app('loginUser')->getUser();
+        $user_id = $user->id;
+        $session_token_id = app('loginUser')->getSessionToken();
         $data['user_id'] = $user_id;
         $data['session_token_id'] = $session_token_id;
         $data['created_by'] = $user_id;

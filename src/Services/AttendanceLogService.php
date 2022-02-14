@@ -33,8 +33,9 @@ class AttendanceLogService
             'data' => 'There is some error while saving'
         ];
 
-        $user_id = app('loginUser')->getUser();
-        $session_token_id = SessionToken::getId($user_id);
+        $user = app('loginUser')->getUser();
+        $user_id = $user->id;
+        $session_token_id = app('loginUser')->getSessionToken();
         $data['attendance_date'] = gmdate('Y-m-d', strtotime($data['attendance_date']));
         $data['attendance_status_date'] = gmdate('Y-m-d G:i:s', strtotime($data['attendance_status_date']));
         $data['user_id'] = $user_id;
