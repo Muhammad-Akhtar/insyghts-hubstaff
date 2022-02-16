@@ -20,7 +20,7 @@ class CreateActivityScreenShotsTable extends Migration
             $table->bigInteger('session_token_id');
             $table->bigInteger('activity_log_id');
             $table->string('image_path');
-            $table->bigInteger('created_by');
+            $table->bigInteger('created_by')->nullable();
             $table->bigInteger('last_modified_by')->nullable();
             $table->bigInteger('deleted_by')->nullable();
             $table->timestamp('created_at')->useCurrent();

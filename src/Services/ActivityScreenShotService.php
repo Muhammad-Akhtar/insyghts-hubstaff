@@ -30,7 +30,9 @@ class ActivityScreenShotService
                 $name = time().'.'.$data['screen_shots']->extension();
                 $path = $data['screen_shots']->move(Helpers::get_public_path('files'), $name);
                 $zip = new ZipArchive();
+                $user = app('loginUser')->getUser();
                 $res = $zip->open($path);
+                $user_id = $user->id;
                 if($res == TRUE){
                     $zip->extractTo(Helpers::get_public_path('screenshots'));
                     for ($i = 0; $i < $zip->numFiles; $i++) {
@@ -47,7 +49,9 @@ class ActivityScreenShotService
                                 'session_token_id' => $actLog->session_token_id,
                                 'activity_log_id' => $actLog->id,
                                 'image_path' => $imgPath,
-                                'created_by' => $actLog->created_by,
+                                'created_by' => $user_id,
+                                'last_modified_by' => $user_id,
+                                'deleted_by' => NULL
                             ];  
                             array_push($bulk_insert, $row);
                         }

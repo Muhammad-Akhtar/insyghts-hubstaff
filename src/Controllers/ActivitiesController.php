@@ -2,18 +2,17 @@
 
 namespace Insyghts\Hubstaff\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Insyghts\Authentication\Middleware\myAuth;
+use Insyghts\Common\Controllers\CommonController;
 use Insyghts\Hubstaff\Services\ActivityScreenShotService;
 use Insyghts\Hubstaff\Services\ActivityLogService;
 
-class ActivitiesController extends Controller
+class ActivitiesController extends CommonController
 {
     public function __construct(ActivityLogService $aLog, 
                                 ActivityScreenShotService $aScreenShot)
     {
-        // Not completed yet by babar
         $this->middleware(myAuth::class);
         $this->actLogService = $aLog;
         $this->actScreenShotService = $aScreenShot;

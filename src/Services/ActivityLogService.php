@@ -17,7 +17,8 @@ class ActivityLogService
         ActivityScreenShot $aScreenShot,
         AttendanceLog $attendanceLog,
         AttendanceLogService $attendanceLogService,
-        User $user
+        User $user,
+        SessionToken $sessionToken
     ) {
         $this->actLog = $aLog;
         $this->actScreenShot = $aScreenShot;
@@ -25,6 +26,7 @@ class ActivityLogService
         $this->attendanceLogService = $attendanceLogService;
         $this->token = Helpers::get_token();
         $this->user = $user;
+        $this->sessionToken = $sessionToken;
     }
 
     public function saveActivityLog($data)
@@ -33,24 +35,23 @@ class ActivityLogService
             'success' => 0,
             'data' => "There is some error",
         ];
-        if($data['activity_date'] != NULL){
+        if ($data['activity_date'] != NULL) {
             $activity_date = gmdate('Y-m-d G:i:s', strtotime($data['activity_date']));
             $data['activity_date'] = $activity_date;
         }
-        if($data['log_from_date'] != NULL){
+        if ($data['log_from_date'] != NULL) {
             $log_from_date = gmdate('Y-m-d G:i:s', strtotime($data['log_from_date']));
             $data['log_from_date'] = $log_from_date;
         }
-        if($data['log_to_date'] != NULL){
+        if ($data['log_to_date'] != NULL) {
             $log_to_date = gmdate('Y-m-d G:i:s', strtotime($data['log_to_date']));
             $data['log_to_date'] = $log_to_date;
         }
         $user = app('loginUser')->getUser();
         $user_id = $user->id;
-        $session_token_id = app('loginUser')->getSessionToken();
+        $session_token_id = $this->sessionToken->getTokenId($user_id);
         $data['user_id'] = $user_id;
         $data['session_token_id'] = $session_token_id;
-        $data['created_by'] = $user_id;
         $data = [
             // currently logged-in user will be here
             'user_id' => $data['user_id'],
@@ -63,13 +64,14 @@ class ActivityLogService
             'keyboard_track' => $data['keyboard_track'],
             'mouse_track'   => $data['mouse_track'],
             'time_type' => $data['time_type'],
-            // currently logged-in user id here
-            'created_by' => $data['created_by'],
+            'created_by' => $user_id,
+            'last_modified_by' => $user_id,
+            'deleted_by' => NULL
         ];
 
         try {
             $activityLog = $this->actLog->saveRecord($data);
-            if($activityLog){
+            if ($activityLog) {
                 $response['success'] = 1;
                 $response['data']  = $activityLog;
             }

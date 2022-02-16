@@ -22,7 +22,7 @@ class CreateAttendanceLogsTable extends Migration
             $table->enum('attendance_status', ['I', 'O']);
             $table->datetime('attendance_status_date');
             $table->enum('status', ['A', 'I']);
-            $table->bigInteger('created_by');
+            $table->bigInteger('created_by')->nullable();
             $table->bigInteger('last_modified_by')->nullable();
             $table->bigInteger('deleted_by')->nullable();
             $table->timestamp('created_at')->useCurrent();

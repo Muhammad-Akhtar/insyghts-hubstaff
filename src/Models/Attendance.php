@@ -3,10 +3,10 @@
 namespace Insyghts\Hubstaff\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Insyghts\Common\Models\BaseModel;
 
-class Attendance extends Model
+class Attendance extends BaseModel
 {
     use HasFactory, SoftDeletes;
 

@@ -22,7 +22,7 @@ class CreateAttendancesTable extends Migration
             $table->bigInteger('last_attendance_id');
             $table->bigInteger('hours');
             $table->enum('status', ['A', 'I']);
-            $table->bigInteger('created_by');
+            $table->bigInteger('created_by')->nullable();
             $table->bigInteger('last_modified_by')->nullable();
             $table->bigInteger('deleted_by')->nullable();
             $table->timestamp('created_at')->useCurrent();

@@ -17,13 +17,14 @@ class AttendanceLogService
         Attendance $attendance,
         AttendanceLog $attendanceLog,
         ActivityLog $activityLog,
-        User $user
+        User $user,
+        SessionToken $sessionToken
     ) {
         $this->attendance = $attendance;
         $this->attendanceLog = $attendanceLog;
         $this->activityLog = $activityLog;
-        $this->token = Helpers::get_token();
         $this->user = $user;
+        $this->sessionToken = $sessionToken;
     }
 
     public function saveAttendanceLog($data)
@@ -35,13 +36,14 @@ class AttendanceLogService
 
         $user = app('loginUser')->getUser();
         $user_id = $user->id;
-        $session_token_id = app('loginUser')->getSessionToken();
+        $session_token_id = $this->sessionToken->getTokenId($user_id);
         $data['attendance_date'] = gmdate('Y-m-d', strtotime($data['attendance_date']));
         $data['attendance_status_date'] = gmdate('Y-m-d G:i:s', strtotime($data['attendance_status_date']));
         $data['user_id'] = $user_id;
         $data['session_token_id'] = $session_token_id;
         $data['created_by'] = $user_id;
-
+        $data['last_modified_by'] = $user_id;
+        $data['deleted_by'] = NULL;
         // $data = [
         //     'user_id' => 1,
         //     'session_token_id' => '1',
@@ -75,22 +77,22 @@ class AttendanceLogService
                         'keyboard_track' => NULL,
                         'mouse_track'   => NULL,
                         'time_type' => $attendanceLog->attendance_status == 'I' ? 'CI' : 'CO',
-                        'created_by' => $attendanceLog->created_by,
-                        'last_modified_by' => NULL,
-                        'deleted_by' => NULL,
+                        'created_by' => $user_id,
+                        'last_modified_by' => $user_id,
+                        'deleted_by' => NULL
                     ];
                     $result = $this->activityLog->saveRecord($activityData);
-                    if($result){
+                    if ($result) {
                         $response['success'] = 1;
                         $response['data'] = $insertedRecord;
                     }
                 }
             }
         } catch (Exception $e) {
-            $show = get_class($e) == 'Illuminate\Database\QueryException' ? false : true;
-            if ($show) {
-                $response['data'] = $e->getMessage();
-            }
+            // $show = get_class($e) == 'Illuminate\Database\QueryException' ? false : true;
+            // if ($show) {
+            $response['data'] = $e->getMessage();
+            // }
         } finally {
             return $response;
         }

@@ -25,7 +25,7 @@ class CreateActivityLogsTable extends Migration
             $table->bigInteger('keyboard_track')->nullable();
             $table->bigInteger('mouse_track')->nullable();
             $table->enum('time_type', ['N', 'I', 'CI', 'CO']);
-            $table->bigInteger('created_by');
+            $table->bigInteger('created_by')->nullable();
             $table->bigInteger('last_modified_by')->nullable();
             $table->bigInteger('deleted_by')->nullable();
             $table->timestamp('created_at')->useCurrent();

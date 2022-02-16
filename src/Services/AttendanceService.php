@@ -58,10 +58,9 @@ class AttendanceService
                 'last_attendance_id' => $data->id,
                 'hours' => $hours,
                 'status' => 'A',
-                // user who created it
-                'created_by' => $data->created_by,
-                // user who modify this row
-                'last_modified_by' => $data->last_modified_by,
+                'created_by' => $data->user_id,
+                'last_modified_by' => $data->user_id,
+                'deleted_by' => NULL,
             ];
             $attendance = $this->attendance->getAttendanceByUserAndDate($data->user_id, $attendanceDate);
             if($attendance == null){
@@ -74,7 +73,7 @@ class AttendanceService
                 $attendance->hours = $attData['hours']; 
                 $attendance->status = $attData['status']; 
                 $attendance->created_by = $attData['created_by']; 
-                $attendance->last_modified_by = NULL;
+                $attendance->last_modified_by = $attData['last_modified_by'];
                 $attendance->deleted_by = NULL;
             }else{
                 // Update or Modification
