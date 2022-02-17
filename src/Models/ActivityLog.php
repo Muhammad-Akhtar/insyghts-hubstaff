@@ -14,9 +14,9 @@ class ActivityLog extends Model
     
     public function saveRecord($data)
     {
-        $activityLogs = [];
-        array_push($activityLogs, $data);
-        $inserted = ActivityLog::insert($activityLogs);
+        // $activityLogs = [];
+        // array_push($activityLogs, $data);
+        $inserted = ActivityLog::insert($data);
         if($inserted){
             $inserted = ActivityLog::latest()->first();
         }

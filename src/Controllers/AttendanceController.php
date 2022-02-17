@@ -45,6 +45,16 @@ class AttendanceController extends Controller
         }
     }
 
+    public function getLastAttendance()
+    {
+        $result = $this->attendanceService->getLastAttendance();
+        if($result['success']){
+            return response()->json(['success' => true, 'data' => $result['data']]);
+        }else{
+            return response()->json(['success' => true, 'message' => $result['data']]);
+        }
+    }
+
     public function showAttendance($id)
     {
         $result = $this->attendanceService->getAttendanceById($id);

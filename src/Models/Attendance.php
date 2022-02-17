@@ -22,6 +22,13 @@ class Attendance extends Model
         return $result;
     }
 
+    public function getPreviousEntry($entry)
+    {
+        $previousEntry = Attendance::where('user_id', '=', ((int)$entry['user_id']))
+            ->orderBy('id', 'DESC')->first();
+        return $previousEntry;
+    }
+
     public function saveAttendance($attendance)
     {
         $inserted=false;
@@ -50,5 +57,11 @@ class Attendance extends Model
     public function getAttendanceByUserAndDate($user_id, $attendance_date){
         return Attendance::where('user_id', '=', $user_id)
                     ->where('attendance_date', $attendance_date)->first();
+    }
+
+    public function getLastAttendance($user_id)
+    {
+        return Attendance::where('user_id', '=', ((int)$user_id))
+                ->orderBy('id', 'DESC')->first();
     }
 }

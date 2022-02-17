@@ -47,11 +47,10 @@ class ActivityLogService
             $log_to_date = gmdate('Y-m-d G:i:s', strtotime($data['log_to_date']));
             $data['log_to_date'] = $log_to_date;
         }
-        // $user = app('loginUser')->getUser();
-        // $user_id = $user->id;
-        // $session_token_id = $this->sessionToken->getTokenId($user_id);
-        $data['user_id'] = 1;
-        $data['session_token_id'] = 1;
+        $user_id = app('loginUser')->getUser()->id;
+        $session_token_id = $this->sessionToken->getSessionToken($user_id)->id;
+        $data['user_id'] = $user_id;
+        $data['session_token_id'] = $session_token_id;
         $data = [
             // currently logged-in user will be here
             'user_id' => $data['user_id'],
@@ -64,9 +63,9 @@ class ActivityLogService
             'keyboard_track' => $data['keyboard_track'],
             'mouse_track'   => $data['mouse_track'],
             'time_type' => $data['time_type'],
-            'created_by' => 1,
-            'last_modified_by' => 1,
-            'deleted_by' => 0
+            'created_by' => app('loginUser')->getUser()->id,
+            'last_modified_by' => app('loginUser')->getUser()->id,
+            'deleted_by' => NULL
         ];
 
         try {

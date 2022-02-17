@@ -13,22 +13,13 @@ class AttendanceLog extends Model
     use HasFactory, SoftDeletes;
     protected $table = 'attendance_logs';
     protected $guarded = [];
-
-    public function getPreviousEntry($entry)
-    {
-        $previousEntry = AttendanceLog::where('user_id', '=', ((int)$entry['user_id']))
-            ->orderBy('id', 'DESC')->first();
-        return $previousEntry;
-    }
+    
     public function saveRecord($data)
     {
         $inserted = false;
-        $attendanceLogs = [];
-        array_push($attendanceLogs, $data);
-
-        $inserted = AttendanceLog::insert(
-            $attendanceLogs
-        );
+        // $attendanceLogs = [];
+        // array_push($attendanceLogs, $data);
+        $inserted = AttendanceLog::insert($data);
         if ($inserted) {
             $inserted = AttendanceLog::latest()->first();
         }

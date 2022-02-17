@@ -99,6 +99,31 @@ class AttendanceService
         
     }
 
+    public function getLastAttendance()
+    {
+        $response = [
+            'success' => false,
+            'data' => 'There is some error'
+        ];
+        $user_id = app('loginUser')->getUser()->id;
+        try{
+            $result = $this->attendance->getLastAttendance($user_id);
+            if($result){
+                $response['success'] = true;
+                $response['data'] = $result;
+            }else{
+                $response['data'] = 'Record not found';
+            }
+        }catch(Exception $e){
+            $show = get_class($e) == 'Illuminate\Database\QueryException' ? false : true;
+            if($show){
+                $response['data'] = $e->getMessage();
+            }
+        }finally{
+            return $response;
+        }
+    }
+
     public function calculateHours($userAttLogs, &$response)
     {
         $hours = 0;

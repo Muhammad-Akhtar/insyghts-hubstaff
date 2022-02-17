@@ -33,17 +33,25 @@ class AttendanceLogService
             'success' => 0,
             'data' => 'There is some error while saving'
         ];
-
-        // $user = app('loginUser')->getUser();
-        // $user_id = $user->id;
-        // $session_token_id = $this->sessionToken->getTokenId($user_id);
-        $data['attendance_date'] = gmdate('Y-m-d', strtotime($data['attendance_date']));
-        $data['attendance_status_date'] = gmdate('Y-m-d G:i:s', strtotime($data['attendance_status_date']));
-        $data['user_id'] = 1;
-        $data['session_token_id'] = 1;
-        $data['created_by'] = 1;
-        $data['last_modified_by'] = 1;
-        $data['deleted_by'] = 0;
+        if (isset($data['attendance_date']) && $data['attendance_date'] != NULL) {
+            $attendance_date = gmdate('Y-m-d', strtotime($data['attendance_date']));
+        }else{
+            $attendance_date = gmdate('Y-m-d');
+        }
+        if (isset($data['attendance_status_date']) && $data['attendance_status_date'] != NULL) {
+            $attendance_status_date = gmdate('Y-m-d G:i:s', strtotime($data['attendance_status_date']));
+        }else{
+            $attendance_status_date = gmdate('Y-m-d G:i:s');
+        }
+        $user_id = app('loginUser')->getUser()->id;
+        $session_token_id = $this->sessionToken->getSessionToken($user_id)->id;
+        $data['attendance_date'] = $attendance_date;
+        $data['attendance_status_date'] = $attendance_status_date;
+        $data['user_id'] = $user_id;
+        $data['session_token_id'] = $session_token_id;
+        $data['created_by'] = $user_id;
+        $data['last_modified_by'] = $user_id;
+        $data['deleted_by'] = NULL;
         // $data = [
         //     'user_id' => 1,
         //     'session_token_id' => '1',
@@ -59,10 +67,19 @@ class AttendanceLogService
         try {
             // check if already checkin or checkout
             // two consecutive check-ins or check-outs not allowed for a user
-            $previousEntry = $this->attendanceLog->getPreviousEntry($data);
+            $previousEntry = $this->attendance->getPreviousEntry($data);
             $isvalid = $this->validateConsecutiveEntry($data, $previousEntry, $response);
+            if($isvalid && $previousEntry){
+                // check-in and check-out is on different dates
+                // if last status = I, and date changed, that means I and O are on different dates
+                // user has to checkout first. from today's date but
+                // attendance_date would be the last_status date
+                // I=Checkin, O=Checkout 
+                $this->adjustIODates($previousEntry, $data);
+            }
 
             if ($isvalid) {
+                
                 $insertedRecord = $this->attendanceLog->saveRecord($data);
                 if ($insertedRecord) {
                     $attendanceLog = $insertedRecord;
@@ -77,9 +94,9 @@ class AttendanceLogService
                         'keyboard_track' => NULL,
                         'mouse_track'   => NULL,
                         'time_type' => $attendanceLog->attendance_status == 'I' ? 'CI' : 'CO',
-                        'created_by' => 1,
-                        'last_modified_by' => 1,
-                        'deleted_by' => 0
+                        'created_by' => app('loginUser')->getUser()->id,
+                        'last_modified_by' => app('loginUser')->getUser()->id,
+                        'deleted_by' => NULL
                     ];
                     $result = $this->activityLog->saveRecord($activityData);
                     if ($result) {
@@ -103,9 +120,9 @@ class AttendanceLogService
         // First case when no record, and two consecutive cases handled here
         $isvalid = false;
         if ($previousEntry) {
-            if ($entry['attendance_status'] == 'I' && $previousEntry->attendance_status == $entry['attendance_status']) {
+            if ($entry['attendance_status'] == 'I' && $previousEntry->last_attendance_status == $entry['attendance_status']) {
                 $response['data'] = "You have already checked-in, Please checkout first";
-            } elseif ($entry['attendance_status'] == 'O' && $previousEntry->attendance_status == $entry['attendance_status']) {
+            } elseif ($entry['attendance_status'] == 'O' && $previousEntry->last_attendance_status == $entry['attendance_status']) {
                 $response['data'] = "You have already checked-out, Please check-in first";
             } else {
                 $isvalid = true;
@@ -118,6 +135,15 @@ class AttendanceLogService
             }
         }
         return $isvalid;
+    }
+
+    public function adjustIODates($previousEntry, &$data)
+    {
+        // Modify attendance date if checkin and checkout are on different dates
+        $lastStatus = $previousEntry->last_attendance_status;
+        if($lastStatus == 'I'){
+            $data['attendance_date'] = $previousEntry->attendance_date;
+        }
     }
 
     public static function getAttendanceLogs()
