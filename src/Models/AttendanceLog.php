@@ -3,11 +3,12 @@
 namespace Insyghts\Hubstaff\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 use Insyghts\Common\Models\BaseModel;
 
-class AttendanceLog extends BaseModel
+class AttendanceLog extends Model
 {
     use HasFactory, SoftDeletes;
     protected $table = 'attendance_logs';

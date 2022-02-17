@@ -1,7 +1,7 @@
 <?php
 
 Route::group([
-	'prefix' => 'api'
+	'prefix' => 'api',
 ], function(){
 	Route::post('hubstaff/attendances/filter', 'Insyghts\Hubstaff\Controllers\AttendanceController@attendances');
 	Route::get('hubstaff/attendances', 'Insyghts\Hubstaff\Controllers\AttendanceController@attendances');

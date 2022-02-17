@@ -2,13 +2,14 @@
 
 namespace Insyghts\Hubstaff\Controllers;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Insyghts\Authentication\Middleware\myAuth;
 use Insyghts\Common\Controllers\CommonController;
 use Insyghts\Hubstaff\Services\AttendanceLogService;
 use Insyghts\Hubstaff\Services\AttendanceService;
 
-class AttendanceController extends CommonController
+class AttendanceController extends Controller
 {
     public function __construct(AttendanceService $attendanceService,
                                 AttendanceLogService $attendanceLogService)
