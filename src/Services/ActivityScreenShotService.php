@@ -51,7 +51,7 @@ class ActivityScreenShotService
                                 'image_path' => $imgPath,
                                 'created_by' => $user_id,
                                 'last_modified_by' => $user_id,
-                                'deleted_by' => NULL
+                                'deleted_by' => 0
                             ];  
                             array_push($bulk_insert, $row);
                         }

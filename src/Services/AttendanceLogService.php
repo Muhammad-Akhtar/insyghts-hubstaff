@@ -34,16 +34,16 @@ class AttendanceLogService
             'data' => 'There is some error while saving'
         ];
 
-        $user = app('loginUser')->getUser();
-        $user_id = $user->id;
-        $session_token_id = $this->sessionToken->getTokenId($user_id);
+        // $user = app('loginUser')->getUser();
+        // $user_id = $user->id;
+        // $session_token_id = $this->sessionToken->getTokenId($user_id);
         $data['attendance_date'] = gmdate('Y-m-d', strtotime($data['attendance_date']));
         $data['attendance_status_date'] = gmdate('Y-m-d G:i:s', strtotime($data['attendance_status_date']));
-        $data['user_id'] = $user_id;
-        $data['session_token_id'] = $session_token_id;
-        $data['created_by'] = $user_id;
-        $data['last_modified_by'] = $user_id;
-        $data['deleted_by'] = NULL;
+        $data['user_id'] = 1;
+        $data['session_token_id'] = 1;
+        $data['created_by'] = 1;
+        $data['last_modified_by'] = 1;
+        $data['deleted_by'] = 0;
         // $data = [
         //     'user_id' => 1,
         //     'session_token_id' => '1',
@@ -77,9 +77,9 @@ class AttendanceLogService
                         'keyboard_track' => NULL,
                         'mouse_track'   => NULL,
                         'time_type' => $attendanceLog->attendance_status == 'I' ? 'CI' : 'CO',
-                        'created_by' => $user_id,
-                        'last_modified_by' => $user_id,
-                        'deleted_by' => NULL
+                        'created_by' => 1,
+                        'last_modified_by' => 1,
+                        'deleted_by' => 0
                     ];
                     $result = $this->activityLog->saveRecord($activityData);
                     if ($result) {
