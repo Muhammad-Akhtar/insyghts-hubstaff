@@ -14,5 +14,13 @@ Route::group([
 	Route::get('hubstaff/attendance/user/{id}', 'Insyghts\Hubstaff\Controllers\AttendanceController@getAttendanceByUser');
 	Route::get('hubstaff/attendance/date/{date}', 'Insyghts\Hubstaff\Controllers\AttendanceController@getAttendanceByDate');
 	
+	Route::post('hubstaff/activity-logs/filter', 'Insyghts\Hubstaff\Controllers\ActivitiesController@listActivityLog');
+	Route::get('hubstaff/activity-logs', 'Insyghts\Hubstaff\Controllers\ActivitiesController@listActivityLog');
 	Route::post('hubstaff/activity-log/save', 'Insyghts\Hubstaff\Controllers\ActivitiesController@storeActivityLog');
+	Route::delete('hubstaff/activity-log/delete/{id}', 'Insyghts\Hubstaff\Controllers\ActivitiesController@deleteActivityLog');
+
+	Route::get('hubstaff/config', 'Insyghts\Hubstaff\Controllers\HubstaffConfigController@viewConfig');
+	Route::post('hubstaff/config/store', 'Insyghts\Hubstaff\Controllers\HubstaffConfigController@storeConfig');
+	Route::put('hubstaff/config/update/{id}', 'Insyghts\Hubstaff\Controllers\HubstaffConfigController@updateConfig');
+	Route::delete('hubstaff/config/delete/{id}', 'Insyghts\Hubstaff\Controllers\HubstaffConfigController@deleteConfig');
 });

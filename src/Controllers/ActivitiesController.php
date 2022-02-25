@@ -19,6 +19,14 @@ class ActivitiesController extends Controller
         $this->actScreenShotService = $aScreenShot;
     }
 
+    public function listActivityLog(Request $request)
+    {
+        $filter = $request->all();
+        $result = $this->actLogService->listActivityLog($filter);
+
+        return response()->json($result);
+    }
+
     public function storeActivityLog(Request $request)
     {
         // Data with a zip file.
@@ -32,5 +40,11 @@ class ActivitiesController extends Controller
         }else{
             return response()->json(['success' => false, 'message' => $result['data']]);
         }
+    }
+
+    public function deleteActivityLog($id)
+    {
+        $result = $this->actLogService->deleteActivityLog($id);
+        return response()->json($result);
     }
 }

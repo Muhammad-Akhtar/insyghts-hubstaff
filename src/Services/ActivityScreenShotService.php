@@ -96,8 +96,7 @@ class ActivityScreenShotService
     public function uploadToS3($path, $photo)
     {
         try {
-            // Storage::disk('s3')->put($path, file_get_contents($photo), 0777);
-            $path = Storage::disk('s3')->put($path, $photo, 0777);
+            $path = Storage::disk('s3')->put($path, file_get_contents($photo), 0777);
             return $path;
         } catch (\Throwable $e) {
             return 0;

@@ -29,6 +29,53 @@ class ActivityLogService
         $this->sessionToken = $sessionToken;
     }
 
+    public function listActivityLog($filter=[])
+    {
+        $response = [
+            'success' => false,
+            'data' => 'There is some error'
+        ];
+        try{
+            $result = $this->actLog->listActivityLog($filter);
+            if(count($result) > 0){
+                $response['success'] = true;
+                $response['data'] = $result;
+            }else{
+                $response['data'] = "No records found!";
+            }
+        }catch(Exception $e){
+            $show = get_class($e) == 'Illuminate\Database\QueryException' ? false : true;
+            if ($show) {
+                $response['data'] = $e->getMessage();
+            }
+        }finally{
+            return $response;
+        }
+    }
+
+    public function deleteActivityLog($id)
+    {
+        $response = [
+            'success' => false,
+            'data' => "There is some error"
+        ];
+
+        try{
+            $result = $this->actLog->deleteActivityLog($id, $response);
+            if($result){
+                $response['success'] = true;
+                $response['data'] = "Record Deleted Successfully!";
+            }
+        }catch(Exception $e){
+            $show = get_class($e) == 'Illuminate\Database\QueryException' ? false : true;
+            if ($show) {
+                $response['data'] = $e->getMessage();
+            }
+        }finally{
+            return $response;
+        }
+    }
+
     public function saveActivityLog($data)
     {
         $response = [
