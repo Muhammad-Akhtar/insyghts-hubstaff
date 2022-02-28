@@ -29,7 +29,6 @@ class ActivitiesController extends Controller
 
     public function storeActivityLog(Request $request)
     {
-        // Data with a zip file.
         $input = $request->all();
         $result = $this->actLogService->saveActivityLog($input);
         if($result['success']){

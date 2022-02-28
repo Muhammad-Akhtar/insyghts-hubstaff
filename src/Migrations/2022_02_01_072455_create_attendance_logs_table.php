@@ -25,8 +25,8 @@ class CreateAttendanceLogsTable extends Migration
             $table->bigInteger('created_by')->nullable();
             $table->bigInteger('last_modified_by')->nullable();
             $table->bigInteger('deleted_by')->nullable();
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->default(DB::raw('NULL ON UPDATE CURRENT_TIMESTAMP'))->nullable();
+            $table->dateTime('created_at')->useCurrent();
+            $table->dateTime('updated_at')->default(DB::raw('NULL ON UPDATE CURRENT_TIMESTAMP'))->nullable();
             $table->softDeletes();
         });
     }

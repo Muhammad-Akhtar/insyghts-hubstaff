@@ -3,6 +3,7 @@
 namespace Insyghts\Hubstaff;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Console\Scheduling\Schedule;
 
 class HubstaffPkgProvider extends ServiceProvider
 {
@@ -17,6 +18,8 @@ class HubstaffPkgProvider extends ServiceProvider
         $this->app->make('Insyghts\Hubstaff\Controllers\AttendanceController');
         $this->app->make('Insyghts\Hubstaff\Controllers\ActivitiesController');
         $this->app->make('Insyghts\Hubstaff\Controllers\HubstaffConfigController');
+        $this->app->make('Insyghts\Hubstaff\Controllers\HubstaffServerController');
+        
     }
 
     /**

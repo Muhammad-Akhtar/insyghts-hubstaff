@@ -18,7 +18,8 @@ class ActivityLogService
         AttendanceLog $attendanceLog,
         AttendanceLogService $attendanceLogService,
         User $user,
-        SessionToken $sessionToken
+        SessionToken $sessionToken,
+        HubstaffServerService $serverService
     ) {
         $this->actLog = $aLog;
         $this->actScreenShot = $aScreenShot;
@@ -27,6 +28,9 @@ class ActivityLogService
         $this->token = Helpers::get_token();
         $this->user = $user;
         $this->sessionToken = $sessionToken;
+        $this->serverService = $serverService;
+        $this->serverTimestamp =  $this->serverService->getTimestamp();
+        $this->serverTimeString = $this->serverTimestamp['data'];  
     }
 
     public function listActivityLog($filter=[])
@@ -82,18 +86,27 @@ class ActivityLogService
             'success' => 0,
             'data' => "There is some error",
         ];
-        if ($data['activity_date'] != NULL) {
+        if ( isset($data['activity_date']) && $data['activity_date'] != NULL) {
             $activity_date = gmdate('Y-m-d G:i:s', strtotime($data['activity_date']));
             $data['activity_date'] = $activity_date;
+        }else{
+            $data['activity_date'] = gmdate('Y-m-d G:i:s', $this->serverTimeString);
         }
-        if ($data['log_from_date'] != NULL) {
+        if ( isset($data['log_from_date']) && $data['log_from_date'] != NULL) {
             $log_from_date = gmdate('Y-m-d G:i:s', strtotime($data['log_from_date']));
             $data['log_from_date'] = $log_from_date;
+        }else{
+            $data['log_from_date'] = gmdate('Y-m-d G:i:s', $this->serverTimeString);
         }
-        if ($data['log_to_date'] != NULL) {
+        if ( isset($data['log_to_date']) && $data['log_to_date'] != NULL) {
             $log_to_date = gmdate('Y-m-d G:i:s', strtotime($data['log_to_date']));
             $data['log_to_date'] = $log_to_date;
+        }else{
+            $data['log_to_date'] = gmdate('Y-m-d G:i:s', $this->serverTimeString);
         }
+        $created_at = gmdate('Y-m-d G:i:s', $this->serverTimeString);
+        $updated_at = gmdate('Y-m-d G:i:s', $this->serverTimeString);
+
         $user_id = app('loginUser')->getUser()->id;
         $session_token_id = $this->sessionToken->getSessionToken($user_id)->id;
         $data['user_id'] = $user_id;
@@ -112,7 +125,9 @@ class ActivityLogService
             'time_type' => $data['time_type'],
             'created_by' => app('loginUser')->getUser()->id,
             'last_modified_by' => app('loginUser')->getUser()->id,
-            'deleted_by' => NULL
+            'deleted_by' => NULL,
+            'created_at' => $created_at,
+            'updated_at' => $updated_at
         ];
 
         try {

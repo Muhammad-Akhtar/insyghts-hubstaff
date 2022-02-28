@@ -18,13 +18,17 @@ class AttendanceLogService
         AttendanceLog $attendanceLog,
         ActivityLog $activityLog,
         User $user,
-        SessionToken $sessionToken
+        SessionToken $sessionToken,
+        HubstaffServerService $serverService
     ) {
         $this->attendance = $attendance;
         $this->attendanceLog = $attendanceLog;
         $this->activityLog = $activityLog;
         $this->user = $user;
         $this->sessionToken = $sessionToken;
+        $this->serverService = $serverService;
+        $this->serverTimestamp =  $this->serverService->getTimestamp();
+        $this->serverTimeString = $this->serverTimestamp['data'];
     }
 
     public function saveAttendanceLog($data)
@@ -36,15 +40,17 @@ class AttendanceLogService
         if (isset($data['attendance_date']) && $data['attendance_date'] != NULL) {
             $attendance_date = gmdate('Y-m-d', strtotime($data['attendance_date']));
         }else{
-            $attendance_date = gmdate('Y-m-d');
+            $attendance_date = gmdate('Y-m-d', $this->serverTimeString);
         }
         if (isset($data['attendance_status_date']) && $data['attendance_status_date'] != NULL) {
             $attendance_status_date = gmdate('Y-m-d G:i:s', strtotime($data['attendance_status_date']));
         }else{
-            $attendance_status_date = gmdate('Y-m-d G:i:s');
+            $attendance_status_date = gmdate('Y-m-d G:i:s', $this->serverTimeString);
         }
         $user_id = app('loginUser')->getUser()->id;
         $session_token_id = $this->sessionToken->getSessionToken($user_id)->id;
+        $created_at = gmdate('Y-m-d G:i:s', $this->serverTimeString);
+        $updated_at = gmdate('Y-m-d G:i:s', $this->serverTimeString);
         $data['attendance_date'] = $attendance_date;
         $data['attendance_status_date'] = $attendance_status_date;
         $data['user_id'] = $user_id;
@@ -52,6 +58,9 @@ class AttendanceLogService
         $data['created_by'] = $user_id;
         $data['last_modified_by'] = $user_id;
         $data['deleted_by'] = NULL;
+        $data['created_at'] = $created_at;
+        $data['updated_at'] = $updated_at;
+        
         // $data = [
         //     'user_id' => 1,
         //     'session_token_id' => '1',
@@ -96,7 +105,9 @@ class AttendanceLogService
                         'time_type' => $attendanceLog->attendance_status == 'I' ? 'CI' : 'CO',
                         'created_by' => app('loginUser')->getUser()->id,
                         'last_modified_by' => app('loginUser')->getUser()->id,
-                        'deleted_by' => NULL
+                        'deleted_by' => NULL,
+                        'created_at' => $created_at,
+                        'updated_at' => $updated_at
                     ];
                     $result = $this->activityLog->saveRecord($activityData);
                     if ($result) {
@@ -106,10 +117,10 @@ class AttendanceLogService
                 }
             }
         } catch (Exception $e) {
-            // $show = get_class($e) == 'Illuminate\Database\QueryException' ? false : true;
-            // if ($show) {
+            $show = get_class($e) == 'Illuminate\Database\QueryException' ? false : true;
+            if ($show) {
             $response['data'] = $e->getMessage();
-            // }
+            }
         } finally {
             return $response;
         }

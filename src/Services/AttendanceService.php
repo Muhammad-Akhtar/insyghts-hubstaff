@@ -10,10 +10,14 @@ use Insyghts\Hubstaff\Models\AttendanceLog;
 class AttendanceService
 {
     function __construct(Attendance $attendance,
-                        AttendanceLog $attendanceLog)
+                        AttendanceLog $attendanceLog,
+                        HubstaffServerService $serverService)
     {
         $this->attendance = $attendance;
         $this->attendanceLog = $attendanceLog;
+        $this->serverService = $serverService;
+        $this->serverTimestamp =  $this->serverService->getTimestamp();
+        $this->serverTimeString = $this->serverTimestamp['data'];
     }
 
     public function getAttendanceList($filters=[])
@@ -50,7 +54,11 @@ class AttendanceService
             $userAttLogs = $this->attendanceLog->getUserAttendanceLogsByDate($data->user_id, $data->attendance_date);
             $hours = $this->calculateHours($userAttLogs, $response);
             // hours calculation done.
-            $attendanceDate = gmdate('Y-m-d', strtotime($data->attendance_date));
+
+            $attendanceDate = gmdate('Y-m-d', $this->serverTimeString);
+            $created_at = gmdate('Y-m-d G:i:s', $this->serverTimeString);
+            $updated_at = gmdate('Y-m-d G:i:s', $this->serverTimeString);
+
             $attData =  [
                 'user_id' => $data->user_id,
                 'attendance_date' => $attendanceDate,
@@ -61,7 +69,10 @@ class AttendanceService
                 'created_by' => $data->user_id,
                 'last_modified_by' => $data->user_id,
                 'deleted_by' => NULL,
+                'created_at' => $created_at,
+                'updated_at' => $updated_at
             ];
+
             $attendance = $this->attendance->getAttendanceByUserAndDate($data->user_id, $attendanceDate);
             if($attendance == null){
                 $attendance = new Attendance();
@@ -75,12 +86,15 @@ class AttendanceService
                 $attendance->created_by = $attData['created_by']; 
                 $attendance->last_modified_by = $attData['last_modified_by'];
                 $attendance->deleted_by = NULL;
+                $attendance->created_at = $attData['created_at'];
+                $attendance->updated_at = $attData['updated_at'];
             }else{
                 // Update or Modification
                 $attendance->last_attendance_status = $attData['last_attendance_status'];
                 $attendance->last_attendance_id = $attData['last_attendance_id'];
                 $attendance->hours = $attData['hours']; 
                 $attendance->last_modified_by = $attData['last_modified_by'];
+                $attendance->updated_at = $attData['updated_at'];
             }
             $inserted = $this->attendance->saveAttendance($attendance);
             if($inserted){

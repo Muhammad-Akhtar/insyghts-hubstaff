@@ -6,9 +6,13 @@ use Insyghts\Hubstaff\Models\HubstaffConfig;
 
 class HubstaffConfigService
 {
-    function __construct(HubstaffConfig $config)
+    function __construct(HubstaffConfig $config,
+                        HubstaffServerService $serverService)
     {
-         $this->hubstaffConfig = $config;
+        $this->hubstaffConfig = $config;
+        $this->serverService = $serverService;
+        $this->serverTimestamp =  $this->serverService->getTimestamp();
+        $this->serverTimeString = $this->serverTimestamp['data'];
     }
 
     public function getConfig()
@@ -45,6 +49,10 @@ class HubstaffConfigService
 
         $data['created_by'] = app('loginUser')->getUser()->id; 
         $data['last_modified_by'] = app('loginUser')->getUser()->id; 
+        $created_at = gmdate('Y-m-d G:i:s', $this->serverTimeString);
+        $updated_at = gmdate('Y-m-d G:i:s', $this->serverTimeString);
+        $data['created_at'] = $created_at;
+        $data['updated_at'] = $updated_at;
 
         try{
             $result = $this->hubstaffConfig->saveConfig($data);
@@ -69,7 +77,9 @@ class HubstaffConfigService
             'data' => 'There is some error',
         ];
         
+        $updated_at = gmdate('Y-m-d G:i:s', $this->serverTimeString);
         $data['last_modified_by'] = app('loginUser')->getUser()->id; 
+        $data['updated_at'] = $updated_at;
 
         try{
             $result = $this->hubstaffConfig->updateConfig($data, $id, $response);

@@ -19,9 +19,9 @@ class AttendanceLog extends Model
         $inserted = false;
         // $attendanceLogs = [];
         // array_push($attendanceLogs, $data);
-        $inserted = AttendanceLog::insert($data);
-        if ($inserted) {
-            $inserted = AttendanceLog::latest()->first();
+        $id = AttendanceLog::insertGetId($data);
+        if ($id) {
+            $inserted = AttendanceLog::find($id);
         }
         return $inserted;
     }

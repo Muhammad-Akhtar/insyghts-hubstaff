@@ -5,7 +5,6 @@ namespace Insyghts\Hubstaff\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Insyghts\Authentication\Middleware\myAuth;
-use Insyghts\Common\Controllers\CommonController;
 use Insyghts\Hubstaff\Services\AttendanceLogService;
 use Insyghts\Hubstaff\Services\AttendanceService;
 
@@ -41,7 +40,7 @@ class AttendanceController extends Controller
             $result = $this->attendanceService->saveAttendance($attLog);
             return response()->json(['success' => true, 'data' => $result['data']]);
         }else{
-            return response()->json(['success' => false, 'message' => $result['data']]); exit;
+            return response()->json(['success' => false, 'message' => $result['data']]);
         }
     }
 

@@ -13,10 +13,14 @@ use Insyghts\Hubstaff\Helpers\Helpers;
 class ActivityScreenShotService
 {
     function __construct(ActivityLog $aLog,
-                        ActivityScreenShot $aScreenShot)
+                        ActivityScreenShot $aScreenShot,
+                        HubstaffServerService $serverService)
     {
         $this->aLog = $aLog;
         $this->aScreenShot = $aScreenShot;
+        $this->serverService = $serverService;
+        $this->serverTimestamp =  $this->serverService->getTimestamp();
+        $this->serverTimeString = $this->serverTimestamp['data']; 
     }
 
     public function saveActivityScreenShot($data, $actLog)
@@ -57,6 +61,8 @@ class ActivityScreenShotService
                             // file path
                             $imgPath = $newPath;
                             $imgObject = new UploadedFile($imgPath, $imgName);
+                            $created_at = gmdate('Y-m-d G:i:s', $this->serverTimeString);
+                            $updated_at = gmdate('Y-m-d G:i:s', $this->serverTimeString);
                             $row = [
                                 'user_id' => $actLog->user_id,
                                 'session_token_id' => $actLog->session_token_id,
@@ -64,7 +70,9 @@ class ActivityScreenShotService
                                 'image_path' => $imgPath,
                                 'created_by' => $user_id,
                                 'last_modified_by' => $user_id,
-                                'deleted_by' => NULL
+                                'deleted_by' => NULL,
+                                'created_at' => $created_at,
+                                'updated_at' => $updated_at
                             ]; 
                             $s3Path = 'screenshots' . DIRECTORY_SEPARATOR . $actLog->user_id . DIRECTORY_SEPARATOR . gmdate('Y-m-d', strtotime($actLog->activity_date)) . DIRECTORY_SEPARATOR . $imgName;
                             if($this->uploadToS3($s3Path, $imgObject))

@@ -23,4 +23,7 @@ Route::group([
 	Route::post('hubstaff/config/store', 'Insyghts\Hubstaff\Controllers\HubstaffConfigController@storeConfig');
 	Route::put('hubstaff/config/update/{id}', 'Insyghts\Hubstaff\Controllers\HubstaffConfigController@updateConfig');
 	Route::delete('hubstaff/config/delete/{id}', 'Insyghts\Hubstaff\Controllers\HubstaffConfigController@deleteConfig');
+
+	// Get server's timestamp
+	Route::get('hubstaff/server/timestamps', 'Insyghts\Hubstaff\Controllers\HubstaffServerController@getTimestamp');
 });
