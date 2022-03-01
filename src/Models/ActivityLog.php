@@ -5,6 +5,7 @@ namespace Insyghts\Hubstaff\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 use Insyghts\Common\Models\BaseModel;
 
 class ActivityLog extends Model
@@ -14,21 +15,31 @@ class ActivityLog extends Model
 
     public function listActivityLog($filters=[])
     {
+        $limit = !empty($filters['limit']) ? $filters['limit'] : 30;
         $actLogsQuery = ActivityLog::query();
         $actLogsQuery->orderBy('id', 'desc');
         if(count($filters) > 0 ){
-            if(isset($filters['user_id']) && !is_null($filters['user_id'])) {
-                $actLogsQuery->where('user_id','=',$filters['user_id']);
-            }
-            if(isset($filters['activity_date']) && !is_null($filters['activity_date'])){
-                $activityDate = gmdate('Y-m-d G:i:s', strtotime($filters['activity_date']));
-                $actLogsQuery->where('activity_date','=',$activityDate);
-            }
-            if(isset($filters['time_type']) && !is_null($filters['time_type'])){
-                $actLogsQuery->where('time_type','=',$filters['time_type']);
+            // [
+            //     {
+            //     "key":"name"
+            //     "condition":"like"
+            //     "value":"awheed"
+            //     },{
+            //     "key":"age"
+            //     "condition":">",
+            //     "value":27
+            //     }
+            // ]
+            foreach($filters as $filter){
+                if($filter['condition'] == 'like' || $filter['condition'] == 'LIKE'){
+                    $actLogsQuery->where($filter['key'], $filter['condition'], "%{$filter['value']}%");
+                }else{
+                    $actLogsQuery->where($filter['key'], $filter['condition'], $filter['value']);
+                }
             }
         }
-        $actLogs = $actLogsQuery->paginate(30);
+        $actLogs = $actLogsQuery->paginate($limit);
+
         return $actLogs;
     }
 

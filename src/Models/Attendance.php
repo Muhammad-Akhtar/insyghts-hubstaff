@@ -11,14 +11,21 @@ class Attendance extends Model
 {
     use HasFactory, SoftDeletes;
 
-    public function getAttendanceList($filter)
+    public function getAttendanceList($filters=[])
     {
-        $queryObj = $this;
-        $limit = !empty($filter['limit']) ? $filter['limit'] : 30;
-        if(count($filter)){
-            // query with where clause
+        $queryObj = Attendance::query();
+        $queryObj->orderBy('id', 'DESC');
+        $limit = !empty($filters['limit']) ? $filters['limit'] : 30;
+        if(count($filters) > 0){
+            foreach($filters as $filter){
+                if($filter['condition'] == 'like' || $filter['condition'] == 'LIKE'){
+                    $queryObj->where($filter['key'], $filter['condition'], "%{$filter['value']}%");
+                }else{
+                    $queryObj->where($filter['key'], $filter['condition'], $filter['value']);
+                }
+            }
         }
-        $result = $queryObj->orderBy('id', 'DESC')->paginate($limit);
+        $result = $queryObj->paginate($limit);
         return $result;
     }
 

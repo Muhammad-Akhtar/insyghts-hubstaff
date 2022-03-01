@@ -3,8 +3,8 @@
 Route::group([
 	'prefix' => 'api',
 ], function(){
-	Route::post('hubstaff/attendances/filter', 'Insyghts\Hubstaff\Controllers\AttendanceController@attendances');
-	Route::get('hubstaff/attendances', 'Insyghts\Hubstaff\Controllers\AttendanceController@attendances');
+	// Same route for listing and filter
+	Route::post('hubstaff/attendances', 'Insyghts\Hubstaff\Controllers\AttendanceController@attendances');
 	
 	Route::post('hubstaff/attendance/save', 'Insyghts\Hubstaff\Controllers\AttendanceController@storeAttendanceLog');
 	Route::get('hubstaff/attendance/last', 'Insyghts\Hubstaff\Controllers\AttendanceController@getLastAttendance');
@@ -14,8 +14,8 @@ Route::group([
 	Route::get('hubstaff/attendance/user/{id}', 'Insyghts\Hubstaff\Controllers\AttendanceController@getAttendanceByUser');
 	Route::get('hubstaff/attendance/date/{date}', 'Insyghts\Hubstaff\Controllers\AttendanceController@getAttendanceByDate');
 	
-	Route::post('hubstaff/activity-logs/filter', 'Insyghts\Hubstaff\Controllers\ActivitiesController@listActivityLog');
-	Route::get('hubstaff/activity-logs', 'Insyghts\Hubstaff\Controllers\ActivitiesController@listActivityLog');
+	// Same route for listing and filter
+	Route::post('hubstaff/activity-logs', 'Insyghts\Hubstaff\Controllers\ActivitiesController@listActivityLog');
 	Route::post('hubstaff/activity-log/save', 'Insyghts\Hubstaff\Controllers\ActivitiesController@storeActivityLog');
 	Route::delete('hubstaff/activity-log/delete/{id}', 'Insyghts\Hubstaff\Controllers\ActivitiesController@deleteActivityLog');
 
