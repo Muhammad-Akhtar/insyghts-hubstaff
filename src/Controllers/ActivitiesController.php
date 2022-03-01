@@ -5,7 +5,6 @@ namespace Insyghts\Hubstaff\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Insyghts\Authentication\Middleware\myAuth;
-use Insyghts\Common\Controllers\CommonController;
 use Insyghts\Hubstaff\Services\ActivityScreenShotService;
 use Insyghts\Hubstaff\Services\ActivityLogService;
 
