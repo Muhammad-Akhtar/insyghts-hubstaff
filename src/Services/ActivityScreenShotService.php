@@ -63,21 +63,25 @@ class ActivityScreenShotService
                             $imgObject = new UploadedFile($imgPath, $imgName);
                             $created_at = gmdate('Y-m-d G:i:s', $this->serverTimeString);
                             $updated_at = gmdate('Y-m-d G:i:s', $this->serverTimeString);
+                            $s3Path = 'screenshots' . DIRECTORY_SEPARATOR . $actLog->user_id . DIRECTORY_SEPARATOR . gmdate('Y-m-d', strtotime($actLog->activity_date)) . DIRECTORY_SEPARATOR . $imgName;
                             $row = [
                                 'user_id' => $actLog->user_id,
                                 'session_token_id' => $actLog->session_token_id,
                                 'activity_log_id' => $actLog->id,
-                                'image_path' => $imgPath,
+                                'image_path' => $s3Path,
                                 'created_by' => $user_id,
                                 'last_modified_by' => $user_id,
                                 'deleted_by' => NULL,
                                 'created_at' => $created_at,
                                 'updated_at' => $updated_at
                             ]; 
-                            $s3Path = 'screenshots' . DIRECTORY_SEPARATOR . $actLog->user_id . DIRECTORY_SEPARATOR . gmdate('Y-m-d', strtotime($actLog->activity_date)) . DIRECTORY_SEPARATOR . $imgName;
                             if($this->uploadToS3($s3Path, $imgObject))
                             { 
                                 array_push($bulk_insert, $row);
+                                unlink($imgPath);
+
+                            }else{
+                                echo "<script>alert('Some Error While Uploading to S3')</script>";
                             }
                         }
                     } 
@@ -104,7 +108,7 @@ class ActivityScreenShotService
     public function uploadToS3($path, $photo)
     {
         try {
-            $path = Storage::disk('s3')->put($path, file_get_contents($photo), 0777);
+            $path = Storage::disk('s3')->put($path, file_get_contents($photo), 'public');
             return $path;
         } catch (\Throwable $e) {
             return 0;

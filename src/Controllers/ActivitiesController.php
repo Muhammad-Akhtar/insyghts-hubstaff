@@ -22,8 +22,22 @@ class ActivitiesController extends Controller
     {
         $filter = $request->all();
         $result = $this->actLogService->listActivityLog($filter);
+        if($result['success']){
+            return response()->json($result);
+        }else{
+            return response()->json(['success' => false, 'message' => $result['message']]);
+        }
+    }
 
-        return response()->json($result);
+    public function listActivityScreenshots(Request $request)
+    {
+        $filter = $request->all();
+        $result = $this->actLogService->listActivityScreenshots($filter);
+        if($result['success']){
+            return response()->json($result);
+        }else{
+            return response()->json(['success' => false, 'message' => $result['message']]);
+        }
     }
 
     public function storeActivityLog(Request $request)
@@ -43,6 +57,10 @@ class ActivitiesController extends Controller
     public function deleteActivityLog($id)
     {
         $result = $this->actLogService->deleteActivityLog($id);
-        return response()->json($result);
+        if($result['success']){
+            return response()->json($result);
+        }else{
+            return response()->json(['success' => false, 'message' => $result['message']]);
+        }
     }
 }

@@ -13,12 +13,31 @@ class ActivityLog extends Model
     use HasFactory, SoftDeletes;
     protected $guarded = [];
 
-    public function listActivityLog($filters=[])
+    public function screenshots()
+    {
+        return $this->hasMany(ActivityScreenShot::class, 'activity_log_id', 'id');
+    }
+
+    public function listActivityLog($filters = [])
     {
         $limit = !empty($filters['limit']) ? $filters['limit'] : 30;
-        $actLogsQuery = ActivityLog::query();
-        $actLogsQuery->orderBy('id', 'desc');
-        if(count($filters) > 0 ){
+        $actLogsQuery = ActivityLog::with(['screenshots']);
+        $actLogsQuery->orderBy('id', 'asc');
+
+        if (isset($filters['from']) && isset($filter['to'])) {
+            $from = $filters['from'];
+            $to = $filters['to'];
+        } else {
+            // Current date data
+             $from = gmdate('Y-m-d 01:00:00');
+            $to = gmdate('Y-m-d 23:59:59');
+            // $from = gmdate('Y-m-02 01:00:00');
+            // $to = gmdate('Y-m-02 23:59:59');
+        }
+
+        $actLogsQuery->whereBetween('activity_date', [$from, $to]);
+
+        if (count($filters) > 0) {
             // [
             //     {
             //     "key":"name"
@@ -30,16 +49,34 @@ class ActivityLog extends Model
             //     "value":27
             //     }
             // ]
-            foreach($filters as $filter){
-                if($filter['condition'] == 'like' || $filter['condition'] == 'LIKE'){
+            foreach ($filters as $filter) {
+                if ($filter['condition'] == 'like' || $filter['condition'] == 'LIKE') {
                     $actLogsQuery->where($filter['key'], $filter['condition'], "%{$filter['value']}%");
-                }else{
+                } else {
                     $actLogsQuery->where($filter['key'], $filter['condition'], $filter['value']);
                 }
             }
         }
-        $actLogs = $actLogsQuery->paginate($limit);
 
+        $actLogs = $actLogsQuery->paginate($limit)->toArray();
+        $actLogs = $this->appendBucketUrl($actLogs);
+        $minDate = ActivityLog::whereBetween('activity_date', [$from, $to])->min('activity_date');
+        $maxDate = ActivityLog::whereBetween('activity_date', [$from, $to])->max('activity_date');
+
+        return ['activityLogs' => $actLogs, 'minDate' => $minDate, 'maxDate' => $maxDate];
+    }
+
+    public function appendBucketUrl($actLogs)
+    {
+        $bucketUrl = "https://insyghts-dev-db.s3.us-east-1.amazonaws.com";
+        $logs = $actLogs['data'];
+        foreach($logs as $key => $actLog){
+            foreach($actLog['screenshots'] as $key1 => $screenshot){
+                $img_path = $actLog['screenshots'][$key1]['image_path'];
+                $logs[$key]['screenshots'][$key1]['image_path'] = $bucketUrl . DIRECTORY_SEPARATOR . $img_path;
+            }
+        }
+        $actLogs['data'] = $logs;
         return $actLogs;
     }
 
@@ -48,7 +85,7 @@ class ActivityLog extends Model
         // $activityLogs = [];
         // array_push($activityLogs, $data);
         $inserted = ActivityLog::insert($data);
-        if($inserted){
+        if ($inserted) {
             $inserted = ActivityLog::latest()->first();
         }
         return $inserted;
@@ -56,14 +93,29 @@ class ActivityLog extends Model
 
     public function deleteActivityLog($id, &$response)
     {
-        $actLog = ActivityLog::find($id);
-        if(!$actLog){
-            $response['data'] = "No recod with id: {$id} found!";
+        $result = false;
+        $id = explode(',', $id);
+        $actLog = ActivityLog::whereIn('id', $id)->get();
+        if (!count($actLog)) {
+            $response['data'] = "Unable to delete, something went wrong!";
         }
-        if($actLog->delete()){
-            $actLog->deleted_by = app('loginUser')->getUser()->id;
-            $actLog->save();
+        foreach($actLog as $log){
+            if(isset($log->screenshots)){
+                $log->screenshots()->delete();
+                foreach($log->screenshots as $screenshot){
+                    $screenshot->deleted_by = app('loginUser')->getUser()->id;
+                    $screenshot->save();
+                }
+            }
         }
-        return $actLog;
+        if (ActivityLog::whereIn('id', $id)->delete()) {
+            foreach($actLog as $log){
+                $log->deleted_by = app('loginUser')->getUser()->id;
+                $log->save();
+            }
+            $result = true;
+        }
+    
+        return $result;
     }
 }
