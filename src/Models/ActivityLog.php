@@ -29,10 +29,10 @@ class ActivityLog extends Model
             $to = $filters['to'];
         } else {
             // Current date data
-             $from = gmdate('Y-m-d 01:00:00');
-            $to = gmdate('Y-m-d 23:59:59');
-            // $from = gmdate('Y-m-02 01:00:00');
-            // $to = gmdate('Y-m-02 23:59:59');
+            // $from = gmdate('Y-m-d 01:00:00');
+            // $to = gmdate('Y-m-d 23:59:59');
+            $from = gmdate('Y-m-02 01:00:00');
+            $to = gmdate('Y-m-02 23:59:59');
         }
 
         $actLogsQuery->whereBetween('activity_date', [$from, $to]);
