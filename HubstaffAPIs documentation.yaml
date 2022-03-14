@@ -117,7 +117,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ServerError'
       x-codegen-request-body-name: body
-  /api/hubstaff/activity-logs:
+  /api/hubstaff/activity-screenshots:
     post:
       tags:
       - ActivityLog
