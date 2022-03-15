@@ -15,7 +15,7 @@ Route::group([
 	Route::get('hubstaff/attendance/date/{date}', 'Insyghts\Hubstaff\Controllers\AttendanceController@getAttendanceByDate');
 	
 	// Same route for listing and filter
-	// Route::post('hubstaff/activity-logs', 'Insyghts\Hubstaff\Controllers\ActivitiesController@listActivityLog');
+	Route::post('hubstaff/activity-logs', 'Insyghts\Hubstaff\Controllers\ActivitiesController@listActivityLog');
 	Route::post('hubstaff/activity-screenshots', 'Insyghts\Hubstaff\Controllers\ActivitiesController@listActivityScreenshots');
 	Route::post('hubstaff/activity-log/save', 'Insyghts\Hubstaff\Controllers\ActivitiesController@storeActivityLog');
 	Route::delete('hubstaff/activity-log/delete/{id}', 'Insyghts\Hubstaff\Controllers\ActivitiesController@deleteActivityLog');
